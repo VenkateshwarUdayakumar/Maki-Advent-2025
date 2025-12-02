@@ -47,6 +47,7 @@ export default function Home() {
   return (
     <main
       style={{
+        position: 'relative',
         height: '100vh',
         width: '100vw',
         display: 'flex',
@@ -57,8 +58,11 @@ export default function Home() {
         overflow: 'hidden',
       }}
     >
+      {/* Main card */}
       <div
         style={{
+          position: 'relative',
+          zIndex: 1,
           width: '100%',
           maxWidth: isMobile ? 360 : 500,
           height: '100%',
@@ -131,6 +135,21 @@ export default function Home() {
                 'transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease',
             } as const;
 
+            const visitedNumberStyle = {
+              position: 'absolute' as const,
+              top: 4,
+              left: 6,
+              fontSize: isMobile ? '0.75rem' : '0.8rem',
+              color: '#3b1a23',
+              zIndex: 2,
+              textShadow: '0 0 3px rgba(255,255,255,0.9)',
+            };
+
+            const normalNumberStyle = {
+              position: 'relative' as const,
+              zIndex: 2,
+            };
+
             return (
               <Link
                 key={num}
@@ -147,8 +166,11 @@ export default function Home() {
                     : {}),
                 }}
               >
-                {num}
+                <span style={isVisited ? visitedNumberStyle : normalNumberStyle}>
+                  {num}
+                </span>
 
+                {/* PNG overlay only when visited */}
                 {isVisited && (
                   <div
                     style={{
@@ -158,8 +180,9 @@ export default function Home() {
                       backgroundSize: '70%',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat',
-                      opacity: 0.55,
+                      opacity: 0.6,
                       pointerEvents: 'none',
+                      zIndex: 1,
                     }}
                   />
                 )}
