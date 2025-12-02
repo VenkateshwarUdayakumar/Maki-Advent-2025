@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
 const STORAGE_KEY = 'maki-advent-visited';
@@ -11,6 +11,21 @@ export default function LetterPage() {
   const params = useParams();
   const idParam = params.id as string;
   const idNumber = parseInt(idParam, 10);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile-ish width
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // When this page opens, mark the box as visited in localStorage
   useEffect(() => {
@@ -34,13 +49,15 @@ export default function LetterPage() {
     return (
       <main
         style={{
-          minHeight: '100vh',
+          height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           fontFamily: 'system-ui, sans-serif',
           background: 'linear-gradient(135deg, #ffe4f2, #ffc6cc)',
+          padding: '1.5rem',
+          boxSizing: 'border-box',
         }}
       >
         <p style={{ marginBottom: '1rem', color: '#6a1b2b' }}>Invalid letter page.</p>
@@ -62,33 +79,42 @@ export default function LetterPage() {
 
   const letter = String.fromCharCode(64 + idNumber); // 1→A, 2→B, ..., 26→Z
 
+  const cardPadding = isMobile ? '1.5rem 1.8rem' : '2rem 3rem';
+  const letterFontSize = isMobile ? '4rem' : '6rem';
+  const textFontSize = isMobile ? '0.9rem' : '1rem';
+  const buttonPadding = isMobile ? '0.65rem 1.4rem' : '0.75rem 1.6rem';
+
   return (
     <main
       style={{
-        minHeight: '100vh',
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         fontFamily: 'system-ui, sans-serif',
         background: 'radial-gradient(circle at top, #ffe4f2, #ffc6cc 40%, #f8d9c7)',
-        padding: '2rem',
+        padding: '1.5rem',
+        boxSizing: 'border-box',
       }}
     >
       <div
         style={{
           background: 'rgba(255, 255, 255, 0.9)',
           borderRadius: '24px',
-          padding: '2rem 3rem',
+          padding: cardPadding,
           boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
           textAlign: 'center',
           border: '1px solid rgba(255,255,255,0.9)',
+          maxWidth: '420px',
+          width: '100%',
+          boxSizing: 'border-box',
         }}
       >
         <p
           style={{
             marginBottom: '0.75rem',
-            fontSize: '1rem',
+            fontSize: textFontSize,
             color: '#7a3b4d',
           }}
         >
@@ -96,9 +122,10 @@ export default function LetterPage() {
         </p>
         <div
           style={{
-            fontSize: '6rem',
+            fontSize: letterFontSize,
             marginBottom: '1.5rem',
             color: '#c2185b',
+            lineHeight: 1,
           }}
         >
           {letter}
@@ -107,12 +134,14 @@ export default function LetterPage() {
         <Link
           href="/"
           style={{
-            padding: '0.75rem 1.6rem',
+            padding: buttonPadding,
             borderRadius: '999px',
             background: 'linear-gradient(135deg, #4caf50, #2e7d32)',
             color: 'white',
             textDecoration: 'none',
             fontWeight: 500,
+            fontSize: isMobile ? '0.9rem' : '1rem',
+            display: 'inline-block',
           }}
         >
           Return to calendar ⬅️
