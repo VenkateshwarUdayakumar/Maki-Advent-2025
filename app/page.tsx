@@ -114,7 +114,7 @@ export default function Home() {
           >
             {allComplete
               ? 'You solved every little riddle! Here is something special, just for you 💌💌💌💌💌'
-              : 'Each little door hides a cozy riddle about what Maki loves 💌 \nSolve a day to watch it light up on the calendar.'}
+              : 'Each little door hides a cozy riddle about what Maki loves 💌💌💌 \nSolve a day to watch it light up on the calendar.'}
           </p>
         </div>
 
