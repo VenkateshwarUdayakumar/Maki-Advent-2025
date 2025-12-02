@@ -1,4 +1,3 @@
-// app/page.tsx
 'use client';
 
 import Link from 'next/link';
@@ -6,20 +5,23 @@ import { useEffect, useState } from 'react';
 
 const NUM_SQUARES = 26;
 const STORAGE_KEY = 'maki-advent-visited';
+const getVisitedImage = (num: number) => `/cells/cell-${num}.png`;
 
 export default function Home() {
   const [visited, setVisited] = useState<number[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Detect screen width for responsive layout
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const handleResize = () => setIsMobile(window.innerWidth < 600);
+
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Load visited progress
+  // Load visited progress from localStorage
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -31,13 +33,14 @@ export default function Home() {
     } catch {}
   }, []);
 
+  // Reset progress
   const handleReset = () => {
     if (typeof window === 'undefined') return;
     window.localStorage.removeItem(STORAGE_KEY);
     setVisited([]);
   };
 
-  // Responsive sizes
+  // Responsive square sizes
   const square = isMobile ? 56 : 75;
   const gap = isMobile ? 8 : 10;
 
@@ -59,7 +62,7 @@ export default function Home() {
           width: '100%',
           maxWidth: isMobile ? 360 : 500,
           height: '100%',
-          maxHeight: 690, // prevents clipping on laptops
+          maxHeight: 690,
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
@@ -70,7 +73,7 @@ export default function Home() {
           boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
         }}
       >
-        {/* ▼ Header */}
+        {/* Header */}
         <div>
           <h1
             style={{
@@ -94,7 +97,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* ▼ Grid */}
+        {/* Grid */}
         <div
           style={{
             display: 'grid',
@@ -111,38 +114,47 @@ export default function Home() {
             const isLast = num === 26;
             const isVisited = visited.includes(num);
 
+            const baseStyle = {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '14px',
+              border: '2px solid #f4bccf',
+              background: isVisited
+                ? 'linear-gradient(145deg, #e3f9e5, #b8e6c7)'
+                : 'linear-gradient(145deg, #ffe9f3, #ffd4e4)',
+              fontSize: isMobile ? '1.1rem' : '1.3rem',
+              color: '#5b2433',
+              textDecoration: 'none',
+              boxShadow: '0 4px 10px rgba(0,0,0,0.08)',
+              transition:
+                'transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease',
+            } as const;
+
             return (
               <Link
                 key={num}
                 href={`/letters/${num}`}
                 style={{
                   position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '14px',
-                  border: '2px solid #f4bccf',
-                  background: isVisited
-                    ? 'linear-gradient(145deg, #e3f9e5, #b8e6c7)'
-                    : 'linear-gradient(145deg, #ffe9f3, #ffd4e4)',
-                  fontSize: isMobile ? '1.1rem' : '1.3rem',
-                  color: '#5b2433',
-                  textDecoration: 'none',
                   overflow: 'hidden',
+                  ...baseStyle,
                   ...(isLast
-                    ? { gridColumn: '3', gridRow: '6' }
+                    ? {
+                        gridColumn: '3 / span 1',
+                        gridRow: '6 / span 1',
+                      }
                     : {}),
                 }}
               >
                 {num}
 
-                {/* ▼ PNG overlay for visited cells */}
                 {isVisited && (
                   <div
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      backgroundImage: `url('/visited.png')`,
+                      backgroundImage: `url(${getVisitedImage(num)})`,
                       backgroundSize: '70%',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat',
@@ -156,7 +168,7 @@ export default function Home() {
           })}
         </div>
 
-        {/* ▼ Reset button */}
+        {/* Reset button */}
         <button
           onClick={handleReset}
           style={{
