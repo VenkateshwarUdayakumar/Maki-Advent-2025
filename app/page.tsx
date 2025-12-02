@@ -113,7 +113,7 @@ export default function Home() {
             }}
           >
             {allComplete
-              ? 'You solved every little riddle. Here is something special, just for you 💌'
+              ? 'You solved every little riddle! Here is something special, just for you 💌💌💌💌💌'
               : 'Each little door hides a cozy riddle about what Maki loves 💌 \nSolve a day to watch it light up on the calendar.'}
           </p>
         </div>
@@ -388,7 +388,7 @@ export default function Home() {
             cursor: 'pointer',
           }}
         >
-          {allComplete ? 'Reset calendar and puzzles' : 'Reset progress 🔁'}
+          {allComplete ? 'Reset calendar and puzzles 🔁' : 'Reset progress 🔁'}
         </button>
       </div>
     </main>
